@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  api:
+    build: .
+    container_name: api
+    ports:
+      - "8080:8080"
+    # ホストOSとコンテナ内でソースコードを共有
+    volumes:
+      - .:/redis-initiation
+    depends_on:
+      - redis
+    tty: true
+
+  redis:
+    build: ./redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    volumes:
+      - ./redis:/data
