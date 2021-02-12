@@ -16,8 +16,10 @@ func main() {
 		})
 	})
 
+	// データ送信
 	router.POST("/sender", controller.Send())
 
+	// データ取得
 	router.GET("/receiver", controller.Receive())
 
 	router.Run(":8080")

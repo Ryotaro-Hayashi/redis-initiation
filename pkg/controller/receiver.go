@@ -12,21 +12,23 @@ import (
 
 func Receive() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		redis := infrastructure.NewRedis()
-		defer redis.CloseRedis()
+		r := infrastructure.NewRedis()
+		defer r.CloseRedis()
 
+		// クエリパラメーターからキーを取得
 		key := context.Query("key")
-
-		fmt.Println("the key is", key)
 
 		responseInformation := model.User{}
 
-		if payload, err := redis.Get(key); err != nil {
+		// データ取得（payloadは[]byte型）
+		if payload, err := r.Get(key); err != nil {
 			fmt.Println("Failed to get data from Redis. :", err)
 		} else {
+			// []byte型を構造体に変換
 			if err := json.Unmarshal(payload, &responseInformation); err != nil {
 				fmt.Println("Could not Unmarshal the retrieved json. :", err)
 			}
+			// context.JSONの第2引数はinterface{}型
 			context.JSON(http.StatusOK, responseInformation)
 		}
 	}
